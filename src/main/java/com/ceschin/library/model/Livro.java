@@ -26,7 +26,7 @@ public class Livro {
 	private String Editora;
 	@Column(nullable=false)
 	private String genero;
-	@OneToOne
+	@Embedded
 	@Column(nullable=false)
 	private Estoque estoque;
 	
@@ -61,7 +61,6 @@ public class Livro {
 		this.genero = genero;
 	}
 	
-	@Embedded
 	public Estoque getEstoque() {
 		return estoque;
 	}
