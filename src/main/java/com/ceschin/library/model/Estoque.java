@@ -1,9 +1,13 @@
 package com.ceschin.library.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Estoque {
+public class Estoque implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int quantidade;
 	private String localizacao;
