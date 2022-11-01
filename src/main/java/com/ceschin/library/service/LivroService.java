@@ -43,7 +43,7 @@ public class LivroService {
 
 	}
 	
-	public ResponseEntity<?> deleteLivro(UUID id){
+	public ResponseEntity<Object> deleteLivro(UUID id){
 		Optional<Livro> livroOptional = livroRepository.findById(id);
 		livroRepository.delete(livroOptional.get());
 		return new ResponseEntity<>(HttpStatus.OK);
