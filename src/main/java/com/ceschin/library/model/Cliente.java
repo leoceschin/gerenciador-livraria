@@ -23,7 +23,7 @@ public class Cliente {
 	@Column(nullable = false)
 	private String nome;
 		
-	@OneToMany
+	@OneToMany(mappedBy = "cliente")
 	private List<Emprestimo> emprestimos;
 
 	public Long getId() {

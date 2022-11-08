@@ -51,6 +51,20 @@ public class Emprestimo {
 	public void setLivros(List<Livro> livros) {
 		this.livros = livros;
 	}
+	public LocalDateTime getDataDeCriacao() {
+		return dataDeCriacao;
+	}
+	public void setDataDeCriacao(LocalDateTime dataDeCriacao) {
+		this.dataDeCriacao = dataDeCriacao;
+	}
+	public LocalDateTime getDataDeDevolucao() {
+		return dataDeDevolucao;
+	}
+	public void setDataDeDevolucao(LocalDateTime dataDeDevolucao) {
+		this.dataDeDevolucao = dataDeDevolucao;
+	}
+	
+	
 	
 	
 }
