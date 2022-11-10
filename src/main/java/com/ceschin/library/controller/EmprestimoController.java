@@ -1,9 +1,6 @@
 package com.ceschin.library.controller;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +21,13 @@ public class EmprestimoController {
 	@PostMapping(value="/adiconar-livro")
 	public Emprestimo adicionarLivro(@RequestBody LivroDto livro) {
 					
-		return emprestimoService.criarEmprestimo(livro);
+		return emprestimoService.adicionarLivro(livro);
+	}
+	
+	@PostMapping(value="/fechar-emprestimo/{id}")
+	public Emprestimo adicionarLivro(@PathVariable(value="id") Long id) {
+					
+		return emprestimoService.fecharEmprestimo(id);
 	}
 	
 	

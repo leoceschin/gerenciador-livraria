@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,32 +22,85 @@ public class EmprestimoService {
 	private EmprestimoRepository emprestimoRepository;
 	@Autowired
 	private LivroRepository livroRepository;
-	
-	public Emprestimo criarEmprestimo(LivroDto livroDto) {
-		Livro livroParaAdicionar = livroRepository.findById(livroDto.getId()).get();
-		LocalDateTime dataCriada = LocalDateTime.now();
-		LocalDateTime dataFinal = dataCriada.plusDays(7);
-		
+
+	@Autowired
+	private ClienteService clienteService;
+
+	public Emprestimo adicionarLivro(LivroDto livroDto) {
 		Emprestimo emprestimo = new Emprestimo();
 		
-		emprestimo.setDataDeCriacao(dataCriada);
-		emprestimo.setDataDeDevolucao(dataFinal);
-		List<Livro> listaLivros = new ArrayList<>();
-		listaLivros.add(livroParaAdicionar);
+		try {
+			Optional<Emprestimo> emprestimoBD = emprestimoRepository.findById(livroDto.getIdEmprestimo());
+			if (emprestimoBD == null) {
+				emprestimo = criarEmprestimo(livroDto);
+			}else {
+				emprestimo = emprestimoBD.get();
+			}
+		}catch (Exception e) {
+			System.out.println("erro gerado: " + e);
+		}
 		
-		emprestimo.setLivros(listaLivros);
 		
+		if (emprestimo.isAberto()) {
+			List<Livro> livros = emprestimo.getLivros();
+			if(livros == null){
+				livros = new ArrayList<>();
+			}
+
+			Optional<Livro> livroParaAdicionar = livroRepository.findById(livroDto.getId());
+			Livro livro = livroParaAdicionar.get();
+			livros.add(livro);
+
+			emprestimo.setLivros(livros);
+
+			return emprestimoRepository.save(emprestimo);
+		} else {
+			throw new RuntimeException("Esse empréstimo não pode ser alterado");
+		}
+	}
+
+	public Emprestimo criarEmprestimo(LivroDto livroDto) {
+
+		Emprestimo emprestimo = new Emprestimo();
+		emprestimo.setCliente(clienteService.listarClienteById(1L));
+
 		return emprestimoRepository.save(emprestimo);
 	}
 	
-	
-	
+
 	public Emprestimo getEmprestimoById(Long id) {
 		return emprestimoRepository.findById(id).get();
 	}
-	
-//	public List<Livro> getLivrosDoEmprestimo(){
-//		
-//	}
+
+	public Emprestimo fecharEmprestimo(Long id) {
+		Emprestimo emprestimo = emprestimoRepository.findById(id).get();
+		if (!emprestimo.isAberto()) {
+			throw new RuntimeException("Esse emprestimo não pode ser alterado");
+
+		} else {
+			List<Livro> listaLivros = emprestimo.getLivros();
+			
+			for (Livro livro : listaLivros) {
+				UUID idLivro = livro.getId();
+				Livro livroDB = livroRepository.findById(idLivro).get();
+
+
+				int quantidade = livroDB.getEstoque().getQuantidade();
+
+				livroDB.getEstoque().setQuantidade(quantidade - 1);
+				livroRepository.save(livroDB);
+			}
+			
+			//emprestimo.setAberto(false);
+			LocalDateTime dataCriada = LocalDateTime.now();
+			LocalDateTime dataFinal = dataCriada.plusDays(7);
+			emprestimo.setDataDeCriacao(dataCriada);
+			emprestimo.setDataDeDevolucao(dataFinal);
+
+			return emprestimoRepository.save(emprestimo);
+
+		}
+
+	}
 
 }

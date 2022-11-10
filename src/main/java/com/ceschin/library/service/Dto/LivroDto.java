@@ -7,22 +7,17 @@ import com.ceschin.library.model.Livro;
 public class LivroDto {
 	
 	private UUID id;
-	private int quantidade;
+	private Long idEmprestimo;
 	
 	public LivroDto(){
 		
 	}
 
-	public LivroDto(UUID id, int quantidade) {
+	public LivroDto(UUID id, Long idEmprestimo) {
 		this.id = id;
-		this.quantidade = quantidade;
+		this.idEmprestimo = idEmprestimo;
 	}
 	
-	public LivroDto(Livro livro) {
-		id = livro.getId();
-		quantidade = livro.getEstoque().getQuantidade();
-	}
-
 	public UUID getId() {
 		return id;
 	}
@@ -31,13 +26,15 @@ public class LivroDto {
 		this.id = id;
 	}
 
-	public int getQuantidade() {
-		return quantidade;
+	public Long getIdEmprestimo() {
+		return idEmprestimo;
 	}
 
-	public void setQuantidade(int quantidade) {
-		this.quantidade = quantidade;
+	public void setIdEmprestimo(Long idEmprestimo) {
+		this.idEmprestimo = idEmprestimo;
 	}
+
+	
 	
 	
 	
