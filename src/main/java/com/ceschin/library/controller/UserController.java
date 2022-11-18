@@ -5,18 +5,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ceschin.library.model.Cliente;
+import com.ceschin.library.model.User;
 import com.ceschin.library.model.Livro;
-import com.ceschin.library.service.ClienteService;
+import com.ceschin.library.service.UserService;
 
 @RestController
-public class ClienteController {
+public class UserController {
 	
 	@Autowired
-	private ClienteService clienteService;
+	private UserService clienteService;
 	
 	@PostMapping("/novo-cliente")
-	public Cliente criaCLiente(@RequestBody Cliente cliente) {
-		return clienteService.salvarCliente(cliente);
+	public User createUser(@RequestBody User user) {
+		return clienteService.salvarNovoUser(user);
 	}
 }

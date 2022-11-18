@@ -7,13 +7,13 @@ import com.ceschin.library.model.Livro;
 public class LivroDto {
 	
 	private UUID id;
-	private Long idEmprestimo;
+	private UUID idEmprestimo;
 	
 	public LivroDto(){
 		
 	}
 
-	public LivroDto(UUID id, Long idEmprestimo) {
+	public LivroDto(UUID id, UUID idEmprestimo) {
 		this.id = id;
 		this.idEmprestimo = idEmprestimo;
 	}
@@ -26,11 +26,11 @@ public class LivroDto {
 		this.id = id;
 	}
 
-	public Long getIdEmprestimo() {
+	public UUID getIdEmprestimo() {
 		return idEmprestimo;
 	}
 
-	public void setIdEmprestimo(Long idEmprestimo) {
+	public void setIdEmprestimo(UUID idEmprestimo) {
 		this.idEmprestimo = idEmprestimo;
 	}
 

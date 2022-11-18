@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ceschin.library.model.User;
 import com.ceschin.library.model.Emprestimo;
 import com.ceschin.library.model.Livro;
 import com.ceschin.library.repository.EmprestimoRepository;
@@ -22,28 +23,26 @@ public class EmprestimoService {
 	private EmprestimoRepository emprestimoRepository;
 	@Autowired
 	private LivroRepository livroRepository;
-
 	@Autowired
-	private ClienteService clienteService;
+	private UserService userService;
 
 	public Emprestimo adicionarLivro(LivroDto livroDto) {
 		Emprestimo emprestimo = new Emprestimo();
-		
+
 		try {
 			Optional<Emprestimo> emprestimoBD = emprestimoRepository.findById(livroDto.getIdEmprestimo());
-			if (emprestimoBD == null) {
+			if (emprestimoBD.isEmpty()) {
 				emprestimo = criarEmprestimo(livroDto);
-			}else {
+			} else {
 				emprestimo = emprestimoBD.get();
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("erro gerado: " + e);
 		}
-		
-		
+
 		if (emprestimo.isAberto()) {
 			List<Livro> livros = emprestimo.getLivros();
-			if(livros == null){
+			if (livros == null) {
 				livros = new ArrayList<>();
 			}
 
@@ -62,36 +61,35 @@ public class EmprestimoService {
 	public Emprestimo criarEmprestimo(LivroDto livroDto) {
 
 		Emprestimo emprestimo = new Emprestimo();
-		emprestimo.setCliente(clienteService.listarClienteById(1L));
+		User user = userService.listarUserById();
+		emprestimo.setUser(user);
 
 		return emprestimoRepository.save(emprestimo);
 	}
-	
 
-	public Emprestimo getEmprestimoById(Long id) {
+	public Emprestimo getEmprestimoById(UUID id) {
 		return emprestimoRepository.findById(id).get();
 	}
 
-	public Emprestimo fecharEmprestimo(Long id) {
+	public Emprestimo fecharEmprestimo(UUID id) {
 		Emprestimo emprestimo = emprestimoRepository.findById(id).get();
 		if (!emprestimo.isAberto()) {
 			throw new RuntimeException("Esse emprestimo não pode ser alterado");
 
 		} else {
 			List<Livro> listaLivros = emprestimo.getLivros();
-			
+
 			for (Livro livro : listaLivros) {
 				UUID idLivro = livro.getId();
 				Livro livroDB = livroRepository.findById(idLivro).get();
-
 
 				int quantidade = livroDB.getEstoque().getQuantidade();
 
 				livroDB.getEstoque().setQuantidade(quantidade - 1);
 				livroRepository.save(livroDB);
 			}
-			
-			//emprestimo.setAberto(false);
+
+			emprestimo.setAberto(false);
 			LocalDateTime dataCriada = LocalDateTime.now();
 			LocalDateTime dataFinal = dataCriada.plusDays(7);
 			emprestimo.setDataDeCriacao(dataCriada);

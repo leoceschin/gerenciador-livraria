@@ -2,6 +2,7 @@ package com.ceschin.library.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,10 +24,10 @@ public class Emprestimo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private UUID id;
 	
 	@ManyToOne
-	private Cliente cliente;
+	private User user;
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -38,17 +39,17 @@ public class Emprestimo {
 	
 	private boolean aberto = true;
 	
-	public long getId() {
+	public UUID getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
-	public Cliente getCliente() {
-		return cliente;
+	public User getUser() {
+		return user;
 	}
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public List<Livro> getLivros() {
 		return livros;
