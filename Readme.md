@@ -2,16 +2,20 @@
 
 ## Resumo
 Sistema de controle para uma biblioteca.
+
 * Autenticando usuários
+    - Permissão de acesso com base em Roles
+
 * Gerenciamento de livros
-- Cadstro
-- Exclusão
-- Consulta do acervo
-- Atualização de quantidade em acervo
+    - Cadstro
+    - Exclusão
+    - Consulta do acervo
+    - Atualização de quantidade em acervo
+
 * Criação e fechamento de empréstimos
-- Criação de um empréstimo
-- Fechamento do empréstimo
-- Adição de exemplares na lista
+    - Criação de um empréstimo
+    - Fechamento do empréstimo
+    - Adição de exemplares na lista
 
 ## Tecnologias
 * Spring Web
