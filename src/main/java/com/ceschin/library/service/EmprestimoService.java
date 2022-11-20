@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.ceschin.library.model.User;
@@ -14,6 +15,7 @@ import com.ceschin.library.model.Emprestimo;
 import com.ceschin.library.model.Livro;
 import com.ceschin.library.repository.EmprestimoRepository;
 import com.ceschin.library.repository.LivroRepository;
+import com.ceschin.library.repository.UserRepository;
 import com.ceschin.library.service.Dto.LivroDto;
 
 @Service
@@ -25,6 +27,8 @@ public class EmprestimoService {
 	private LivroRepository livroRepository;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private UserRepository userRepository;
 
 	public Emprestimo adicionarLivro(LivroDto livroDto) {
 		Emprestimo emprestimo = new Emprestimo();
@@ -61,10 +65,23 @@ public class EmprestimoService {
 	public Emprestimo criarEmprestimo(LivroDto livroDto) {
 
 		Emprestimo emprestimo = new Emprestimo();
-		User user = userService.listarUserById();
+
+		User user = userRepository.findByUsername(getCurrentLoggedUsername()).get();
 		emprestimo.setUser(user);
 
 		return emprestimoRepository.save(emprestimo);
+	}
+
+	public String getCurrentLoggedUsername() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username;
+		if (principal instanceof User) {
+			username = ((User) principal).getUsername().toString();
+		} else {
+			username = principal.toString();
+		}
+
+		return username;
 	}
 
 	public Emprestimo getEmprestimoById(UUID id) {

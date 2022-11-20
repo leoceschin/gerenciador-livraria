@@ -1,50 +1,61 @@
 package com.ceschin.library.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import com.ceschin.library.enums.RoleName;
+
 @Entity
 @Table(name="tb_roles")
-public class Role {
+public class Role implements GrantedAuthority, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private String name;
-
-    public Role() {
-    }
-
-    public Role(UUID id) {
-        this.id = id;
-        
-    }
-
-    public Role(UUID id, String name) {
-        this.id = id;
-        this.name = name;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
+    private RoleName roleName;
+    
+    
+    @Override
+    public String getAuthority() {
+        return this.roleName.toString();
     }
 
     public UUID getId() {
         return id;
     }
 
+
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+
+    public RoleName getRoleName() {
+        return roleName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void setRoleName(RoleName roleName) {
+        this.roleName = roleName;
     }
 
     
+   
+
+   
 }

@@ -1,5 +1,7 @@
 package com.ceschin.library.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,7 @@ public class EmprestimoController {
 	}
 	
 	@PostMapping(value="/fechar-emprestimo/{id}")
-	public Emprestimo adicionarLivro(@PathVariable(value="id") Long id) {
+	public Emprestimo adicionarLivro(@PathVariable(value="id") UUID id) {
 					
 		return emprestimoService.fecharEmprestimo(id);
 	}

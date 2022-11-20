@@ -24,7 +24,7 @@ public class UserService {
 	}
 
 	public User salvarNovoUser(User user) {
-		User userTemp = userRepository.findByUsername(user.getUsername());
+		User userTemp = userRepository.findByUsername(user.getUsername()).get();
 		if(userTemp == null){
 			throw new RuntimeException("Já existe um usuário com esse username.");
 		}
