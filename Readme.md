@@ -7,7 +7,7 @@ Sistema de controle para uma biblioteca.
     - Permissão de acesso com base em Roles
 
 * Gerenciamento de livros
-    - Cadstro
+    - Cadastro
     - Exclusão
     - Consulta do acervo
     - Atualização de quantidade em acervo
