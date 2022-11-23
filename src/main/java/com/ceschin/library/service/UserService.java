@@ -5,11 +5,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ceschin.library.model.User;
-import com.ceschin.library.model.Emprestimo;
+import com.ceschin.library.model.Loan;
 import com.ceschin.library.repository.UserRepository;
 
 @Service
@@ -18,45 +17,43 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public User salvarUser(User user) {
+	public User saveUser(User user) {
 
 		return userRepository.save(user);
 	}
 
-	public User salvarNovoUser(User user) {
+	public User saveNewUser(User user) {
 		User userTemp = userRepository.findByUsername(user.getUsername()).get();
-		if(userTemp == null){
+		if (userTemp == null) {
 			throw new RuntimeException("Já existe um usuário com esse username.");
 		}
 
-		user.setPassword(passwordEncoder().encode(user.getPassword()));
+		
 		return userRepository.save(user);
 	}
 
-	public List<User> listarUsers() {
+	public List<User> getAllUsers() {
 		return userRepository.findAll();
 	}
 
-	public User listarUserById(UUID id) {
-		Optional<User> userRecebido = userRepository.findById(id);
-		if (userRecebido.isEmpty()) {
+	public User getUserById(UUID id) {
+		Optional<User> userOptional = userRepository.findById(id);
+		if (userOptional.isEmpty()) {
 			throw new RuntimeException("Usuário não existe.");
 		}
 
-		return userRecebido.get();
+		return userOptional.get();
 	}
 
-	public List<Emprestimo> listarEmprestimosCliente(UUID id) {
-		User user = listarUserById(id);
+	public List<Loan> getLoansOfUser(UUID id) {
+		User user = getUserById(id);
 
-		List<Emprestimo> listaEmprestimo = user.getEmprestimos();
+		List<Loan> loanList = user.getLoans();
 
-		return listaEmprestimo;
+		return loanList;
 
 	}
 
-	private BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+	
 
 }

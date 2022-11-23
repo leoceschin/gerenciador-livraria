@@ -1,6 +1,5 @@
 package com.ceschin.library.model;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -17,10 +16,8 @@ import org.springframework.security.core.GrantedAuthority;
 import com.ceschin.library.enums.RoleName;
 
 @Entity
-@Table(name="tb_roles")
-public class Role implements GrantedAuthority, Serializable {
-
-	private static final long serialVersionUID = 1L;
+@Table(name = "tb_roles")
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,8 +25,7 @@ public class Role implements GrantedAuthority, Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
     private RoleName roleName;
-    
-    
+
     @Override
     public String getAuthority() {
         return this.roleName.toString();
@@ -39,23 +35,16 @@ public class Role implements GrantedAuthority, Serializable {
         return id;
     }
 
-
     public void setId(UUID id) {
         this.id = id;
     }
-
 
     public RoleName getRoleName() {
         return roleName;
     }
 
-
     public void setRoleName(RoleName roleName) {
         this.roleName = roleName;
     }
 
-    
-   
-
-   
 }

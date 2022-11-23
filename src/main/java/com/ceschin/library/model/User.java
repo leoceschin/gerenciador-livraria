@@ -1,6 +1,5 @@
 package com.ceschin.library.model;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -21,22 +20,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "tb_users")
-public class User implements UserDetails, Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 	@Column(nullable = false)
-	private String nome;
+	private String name;
 	@Column(nullable = false)
 	private String username;
 	@Column(nullable = false)
 	private String password;
 
 	@OneToMany(mappedBy = "user")
-	private List<Emprestimo> emprestimos;
+	private List<Loan> loans;
 
 	@ManyToMany
 	@JoinTable(name = "tb_users_roles",
@@ -87,20 +84,20 @@ public class User implements UserDetails, Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getName() {
+		return name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public List<Emprestimo> getEmprestimos() {
-		return emprestimos;
+	public List<Loan> getLoans() {
+		return loans;
 	}
 
-	public void setEmprestimos(List<Emprestimo> emprestimos) {
-		this.emprestimos = emprestimos;
+	public void setLoans(List<Loan> loans) {
+		this.loans = loans;
 	}
 
 	public List<Role> getRoles() {

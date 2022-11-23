@@ -16,7 +16,12 @@ public class WebSecurity {
             .httpBasic()
             .and()
             .authorizeHttpRequests()
-            .antMatchers(HttpMethod.GET, "/api/livros/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/books/update-inventory-quantity/**").hasRole("ROLE_ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ROLE_ADMIN")
+            .antMatchers("/api/loans/add-book").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
+            .antMatchers("/api/loans/close-loan/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
+            .antMatchers("/api/users/new-user").hasAnyRole("ROLE_ADMIN")
             .anyRequest().authenticated()
             .and()
             .csrf().disable();
