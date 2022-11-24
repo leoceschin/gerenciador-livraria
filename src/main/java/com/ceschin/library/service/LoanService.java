@@ -31,15 +31,7 @@ public class LoanService {
 	private UserRepository userRepository;
 
 	public Loan addBookOnLoan(BookDto bookDto) {
-		User user = getActiveUserLoan();
-		List<Loan> loanList = user.getLoans();
-		Loan loan = new Loan();
-
-		for (Loan loanTemp : loanList) {
-			if (loanTemp.isOpen()) {
-				loan = loanTemp;
-			}
-		}
+		Loan loan = getActiveLoan();
 
 		List<Book> books = loan.getBooks();
 		if (books == null) {
@@ -54,6 +46,19 @@ public class LoanService {
 
 		return loanRepository.save(loan);
 
+	}
+
+	private Loan getActiveLoan() {
+		User user = getActiveUser();
+		List<Loan> loanList = user.getLoans();
+		Loan loan = new Loan();
+
+		for (Loan loanTemp : loanList) {
+			if (loanTemp.isOpen()) {
+				loan = loanTemp;
+			}
+		}
+		return loan;
 	}
 
 	public Loan createLoan() {
@@ -74,7 +79,7 @@ public class LoanService {
 
 	}
 
-	public User getActiveUserLoan() {
+	public User getActiveUser() {
 		User user = userRepository.findByUsername(getCurrentLoggedUsername()).get();
 		Loan loanTemp = new Loan();
 		List<Loan> loans = user.getLoans();
@@ -99,20 +104,26 @@ public class LoanService {
 	}
 
 	public Loan deleteBookFromLoan(BookDto bookDto) {
-		Loan loan = loanRepository.findById(getActiveUserLoan().getId()).get();
+		Loan loan = getActiveLoan();
 		List<Book> loanBookList = loan.getBooks();
-
+		
+		int bookIndex = -1;
 		for (Book book : loanBookList) {
-			if (book.getId() == bookDto.getId()) {
-				loanBookList.remove(book);
+			boolean compare = (book.getId()).equals(bookDto.getId());
+			
+			if (compare) {
+				bookIndex = loanBookList.indexOf(book);
+				
 			}
 		}
-
+		if(bookIndex != -1) 
+			loanBookList.remove(bookIndex);
+		loan.setBooks(loanBookList);
 		return loanRepository.save(loan);
 	}
 
 	public Loan closeLoan(UUID id) {
-		Loan loan = loanRepository.findById(id).get();
+		Loan loan = getActiveLoan();
 		if (!loan.isOpen()) {
 			throw new RuntimeException("Esse empréstimo não pode ser alterado");
 

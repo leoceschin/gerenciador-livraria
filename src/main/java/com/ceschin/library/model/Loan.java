@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 @Entity
 @Table(name = "tb_loans")
 public class Loan {
@@ -30,14 +31,13 @@ public class Loan {
 	@Column(columnDefinition = "uuid")
 	private UUID id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_loans_users",
 			joinColumns = @JoinColumn(name="loan_id"),
 			inverseJoinColumns = @JoinColumn(name="user_id"))
 	private User user;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	@JsonIgnore
 	private List<Book> books;
 
 	private LocalDateTime createdAt;

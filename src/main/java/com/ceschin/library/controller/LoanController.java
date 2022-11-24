@@ -29,7 +29,7 @@ public class LoanController {
 		return loanService.closeLoan(id);
 	}
 	
-	@PatchMapping(value="/delete-book-loan/")
+	@PostMapping(value="/delete-book-loan")
 	public Loan deleteBookFromLoan (@RequestBody BookDto book){
 		return loanService.deleteBookFromLoan(book);
 	}
