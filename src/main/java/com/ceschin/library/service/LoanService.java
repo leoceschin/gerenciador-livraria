@@ -2,11 +2,13 @@ package com.ceschin.library.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,62 +30,85 @@ public class LoanService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public Loan addBook (BookDto bookDto) {
+	public Loan addBookOnLoan(BookDto bookDto) {
+		User user = getActiveUserLoan();
+		List<Loan> loanList = user.getLoans();
 		Loan loan = new Loan();
 
-		try {
-			Optional<Loan> loanBD = loanRepository.findById(bookDto.getIdLoan());
-			if (loanBD.isEmpty()) {
-				loan = createLoan(bookDto);
-			} else {
-				loan = loanBD.get();
+		for (Loan loanTemp : loanList) {
+			if (loanTemp.isOpen()) {
+				loan = loanTemp;
 			}
-		} catch (Exception e) {
-			System.out.println("erro gerado: " + e);
 		}
 
-		if (loan.isOpen()) {
-			List<Book> books = loan.getBooks();
-			if (books == null) {
-				books = new ArrayList<>();
-			}
-
-			Optional<Book> livroParaAdicionar = bookRepository.findById(bookDto.getId());
-			Book livro = livroParaAdicionar.get();
-			books.add(livro);
-
-			loan.setBooks(books);
-
-			return loanRepository.save(loan);
-		} else {
-			throw new RuntimeException("Esse empréstimo não pode ser alterado");
+		List<Book> books = loan.getBooks();
+		if (books == null) {
+			books = new ArrayList<>();
 		}
+
+		Optional<Book> bookToAdd = bookRepository.findById(bookDto.getId());
+		Book book = bookToAdd.get();
+		books.add(book);
+
+		loan.setBooks(books);
+
+		return loanRepository.save(loan);
+
 	}
 
-	public Loan createLoan(BookDto livroDto) {
+	public Loan createLoan() {
 
 		Loan loan = new Loan();
 
 		User user = userRepository.findByUsername(getCurrentLoggedUsername()).get();
+		UUID idUser = user.getId();
 		loan.setUser(user);
 
 		return loanRepository.save(loan);
 	}
 
 	public String getCurrentLoggedUsername() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username;
-		if (principal instanceof User) {
-			username = ((User) principal).getUsername().toString();
-		} else {
-			username = principal.toString();
-		}
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		return currentPrincipalName;
 
-		return username;
 	}
 
-	public Loan getLoanById(UUID id) {
-		return loanRepository.findById(id).get();
+	public User getActiveUserLoan() {
+		User user = userRepository.findByUsername(getCurrentLoggedUsername()).get();
+		Loan loanTemp = new Loan();
+		List<Loan> loans = user.getLoans();
+		if (!loans.isEmpty()) {
+			for (Loan loan : loans) {
+				if (loan.isOpen()) {
+					loanTemp = loan;
+				}
+			}
+		} else {
+			loanTemp = createLoan();
+
+		}
+		loans.add(loanTemp);
+		user.setLoans(loans);
+		return user;
+
+	}
+
+	public Optional<Loan> getLoanById(UUID id) {
+		return loanRepository.findById(id);
+	}
+
+	public Loan deleteBookFromLoan(BookDto bookDto) {
+		Loan loan = loanRepository.findById(getActiveUserLoan().getId()).get();
+		List<Book> loanBookList = loan.getBooks();
+
+		for (Book book : loanBookList) {
+			if (book.getId() == bookDto.getId()) {
+				loanBookList.remove(book);
+			}
+		}
+
+		return loanRepository.save(loan);
 	}
 
 	public Loan closeLoan(UUID id) {

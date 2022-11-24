@@ -3,11 +3,8 @@ package com.ceschin.library.controller;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 import com.ceschin.library.model.Loan;
 import com.ceschin.library.service.LoanService;
@@ -20,10 +17,10 @@ public class LoanController {
 	@Autowired
 	private LoanService loanService;
 	
-	@PostMapping(value="/add-book")
+	@PostMapping(value="/add-book-loan")
 	public Loan addBookOnLoan (@RequestBody BookDto book) {
 					
-		return loanService.addBook(book);
+		return loanService.addBookOnLoan(book);
 	}
 	
 	@PostMapping(value="/close-loan/{id}")
@@ -32,5 +29,9 @@ public class LoanController {
 		return loanService.closeLoan(id);
 	}
 	
+	@PatchMapping(value="/delete-book-loan/")
+	public Loan deleteBookFromLoan (@RequestBody BookDto book){
+		return loanService.deleteBookFromLoan(book);
+	}
 	
 }

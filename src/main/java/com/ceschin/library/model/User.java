@@ -1,5 +1,6 @@
 package com.ceschin.library.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -18,9 +19,13 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb_users")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +38,7 @@ public class User implements UserDetails {
 	private String password;
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	private List<Loan> loans;
 
 	@ManyToMany
