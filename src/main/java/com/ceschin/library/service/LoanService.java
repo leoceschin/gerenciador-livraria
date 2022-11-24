@@ -122,7 +122,7 @@ public class LoanService {
 		return loanRepository.save(loan);
 	}
 
-	public Loan closeLoan(UUID id) {
+	public Loan closeLoan() {
 		Loan loan = getActiveLoan();
 		if (!loan.isOpen()) {
 			throw new RuntimeException("Esse empréstimo não pode ser alterado");

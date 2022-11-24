@@ -2,7 +2,6 @@ package com.ceschin.library.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,7 @@ public class WebSecurity {
             .antMatchers("/api/books/delete/{id}").hasRole("ADMIN")
             .antMatchers("/api/loans/add-book-loan").hasAnyRole("USER", "ADMIN")
             .antMatchers("/api/loans/delete-book-loan").hasAnyRole("USER", "ADMIN")
-            .antMatchers("/api/loans/close-loan/**").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/api/loans/close-loan").hasAnyRole("USER", "ADMIN")
             .antMatchers("/api/users/new-user").hasAnyRole("ADMIN")
             .anyRequest().authenticated()
             .and()

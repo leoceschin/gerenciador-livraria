@@ -16,6 +16,7 @@ Sistema de controle para uma biblioteca.
     - Criação de um empréstimo
     - Fechamento do empréstimo
     - Adição de exemplares na lista
+    - Remoção de exemplares da lista
 
 ## Tecnologias
 * Spring Web
