@@ -35,6 +35,7 @@ public class User implements UserDetails, Serializable {
 	@Column(nullable = false)
 	private String username;
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 
 	@OneToMany(mappedBy = "user")
@@ -45,36 +46,37 @@ public class User implements UserDetails, Serializable {
 	@JsonIgnore
 	private List<Role> roles;
 
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles;
 	}
-
+	@JsonIgnore
 	@Override
 	public String getPassword() {
 		return this.password;
 	}
-
+	@JsonIgnore
 	@Override
 	public String getUsername() {
 		return this.username;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
 		return true;

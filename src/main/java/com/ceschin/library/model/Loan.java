@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -28,16 +29,19 @@ public class Loan {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(columnDefinition = "uuid")
 	private UUID id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinTable(name = "tb_loans_users",
 			joinColumns = @JoinColumn(name="loan_id"),
-			inverseJoinColumns = @JoinColumn(name="user_id"))
+			inverseJoinColumns = @JoinColumn(name="users_id"))
+	@JsonIgnore
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "tb_loans_books",
+			joinColumns = @JoinColumn(name="loan_id"),
+			inverseJoinColumns = @JoinColumn(name="books_id"))
 	private List<Book> books;
 
 	private LocalDateTime createdAt;

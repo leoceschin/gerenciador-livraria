@@ -37,7 +37,6 @@ public class Book implements Serializable {
 		return id;
 	}
 
-	@ManyToMany
 	public void setId(UUID id) {
 		this.id = id;
 	}
